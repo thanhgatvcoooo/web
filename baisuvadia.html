@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Thi Trực Tuyến</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1><a href="index.html">ThiTHPT Pro.</a></h1>
+                <p id="header-subject-info">Đang tải dữ liệu...</p>
+            </div>
+            <div class="exam-info-top" id="header-tools">
+                <div class="timer-box" id="timer-display"><i class="fa-solid fa-stopwatch"></i> <span id="time-text">50:00</span></div>
+                <button class="btn btn-success" onclick="confirmSubmit()">Nộp bài</button>
+            </div>
+        </div>
+        <div class="progress-container" id="prog-container"><div class="progress-bar" id="prog-bar"></div></div>
+    </header>
+
+    <main class="exam-layout">
+        <div id="landing-page" class="landing-card fade-in">
+            <h2 id="intro-title">Đang tải tên đề thi...</h2>
+            <p style="color: var(--text-light); font-size: 1.1rem; margin-bottom: 20px;">Bạn đã vào phòng thi. Vui lòng đọc kỹ quy chế trước khi bắt đầu.</p>
+            
+            <div class="rules-box">
+                <h3>📜 Quy chế & Thang điểm (Bộ GD&ĐT 2025)</h3>
+                <ul class="rules-list">
+                    <li>Thời gian làm bài: <strong>50 phút</strong>. Hết giờ hệ thống tự động thu bài.</li>
+                    <li><strong>Phần I:</strong> Trắc nghiệm 4 đáp án (Mỗi câu đúng <strong>+0,25 điểm</strong>).</li>
+                    <li><strong>Phần II:</strong> Trắc nghiệm Đúng/Sai (Đúng 1 ý: 0,1đ | 2 ý: 0,25đ | 3 ý: 0,5đ | 4 ý: 1,0đ).</li>
+                    <li><strong>Phần III (Tùy môn):</strong> Điền đáp án ngắn (Mỗi câu đúng <strong>+0,25 điểm</strong>).</li>
+                    <li style="color: var(--danger); font-weight: bold; margin-top: 15px;">⚠️ Lưu ý quan trọng: Hệ thống yêu cầu hoàn thành 100% câu hỏi mới được phép bấm tự nộp bài.</li>
+                </ul>
+            </div>
+            <button class="btn btn-primary" style="font-size: 1.25rem; padding: 15px 50px; border-radius: 50px;" onclick="startExam()">VÀO LÀM BÀI THI</button>
+        </div>
+
+        <div id="exam-page">
+            <div id="exam-content"></div>
+            <div style="text-align: center; margin: 50px 0;">
+                <button class="btn btn-success" style="font-size: 1.25rem; padding: 15px 60px; border-radius: 50px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);" onclick="confirmSubmit()">NỘP BÀI VÀ XEM KẾT QUẢ</button>
+            </div>
+        </div>
+
+        <div id="result-page">
+            <div class="landing-card fade-in" style="margin-bottom: 40px; padding: 50px 30px;">
+                <h2 style="color: var(--text-main); margin-bottom: 30px;">BÁO CÁO KẾT QUẢ BÀI THI</h2>
+                <div class="score-circle-wrapper">
+                    <div class="score-circle" id="score-circle-bg">
+                        <div class="score-inner">
+                            <span class="score-number" id="final-score">0</span>
+                            <span style="font-weight: 600; color: var(--text-light); text-transform: uppercase;">Điểm Số</span>
+                        </div>
+                    </div>
+                </div>
+                <p id="feedback-msg" style="font-size: 1.2rem; font-weight: 700; color: #334155; margin-bottom: 10px;"></p>
+
+                <div class="stat-grid" id="stat-grid"></div>
+                <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn btn-primary" onclick="location.reload()">Thi lại & Đảo đề</button>
+                    <a href="index.html" class="btn btn-outline">Về Trang chủ</a>
+                </div>
+            </div>
+            <div id="result-details"></div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="warning-modal">
+        <div class="modal">
+            <div class="modal-icon">🛑</div>
+            <h3>Chưa Thể Nộp Bài!</h3>
+            <p>Bạn vẫn còn <strong><span id="missing-count" style="color: var(--danger); font-size: 1.2rem;">0</span></strong> ý/câu hỏi chưa hoàn thành. <br>Vui lòng làm hết 100% bài thi trước khi nộp.</p>
+            <button class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('warning-modal').style.display='none'">Quay lại làm tiếp</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="submit-modal">
+        <div class="modal">
+            <div class="modal-icon">✅</div>
+            <h3>Xác Nhận Nộp Bài</h3>
+            <p>Tuyệt vời! Bạn đã hoàn thành toàn bộ bài thi. Bạn có chắc chắn muốn nộp bài lúc này không?</p>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="btn btn-outline" onclick="document.getElementById('submit-modal').style.display='none'">Khoan đã</button>
+                <button class="btn btn-success" onclick="processSubmit()">Nộp bài ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="de1.js"></script>
+    <script src="de2.js"></script>
+    <script src="de3.js"></script>
+    <script src="de4.js"></script>
+    <script src="de5.js"></script>
+    <script src="logic.js"></script>
+</body>
+</html>
